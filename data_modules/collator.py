@@ -13,7 +13,7 @@ class Collator(object):
         """
         super(Collator, self).__init__()
         self.device = config.train.device_setting.device
-        self.label_size = len(vocab.v2i['label'].keys())
+        self.label_size = len(vocab.v2i['doc_label'].keys())
 
     def _multi_hot(self, batch_labels):
         """
@@ -44,8 +44,8 @@ class Collator(object):
         batch_label = []
         batch_doc_len = []
         for sample in batch:
-            batch_token.append(sample['token'])
-            batch_label.append(sample['label'])
+            batch_token.append(sample['doc_token'])
+            batch_label.append(sample['doc_label'])
             batch_doc_len.append(sample['token_len'])
 
         batch_token = torch.tensor(batch_token)
