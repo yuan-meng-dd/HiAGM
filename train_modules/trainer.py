@@ -48,34 +48,46 @@ class Trainer(object):
         total_loss = 0.0
         num_batch = data_loader.__len__()
 
+        # only update gradients every 2 steps
+        accumulation_steps = 2  
+        accumulation_counter = 0
+
         for batch in tqdm.tqdm(data_loader):
             logits = self.model(batch)
+
             if self.config.train.loss.recursive_regularization.flag:
                 recursive_constrained_params = self.model.hiagm.linear.weight
             else:
                 recursive_constrained_params = None
+
             loss = self.criterion(logits,
                                   batch['label'].to(self.config.train.device_setting.device),
                                   recursive_constrained_params)
+
             total_loss += loss.item()
 
             if mode == 'TRAIN':
-                self.optimizer.zero_grad()
-                loss.backward()
-                self.optimizer.step()
+                loss = loss / accumulation_steps
+                loss.backward(retain_graph=False)
+
+                accumulation_counter += 1
+
+                if accumulation_counter % accumulation_steps == 0:
+                    self.optimizer.step()
+                    self.optimizer.zero_grad()
+
             predict_results = torch.sigmoid(logits).cpu().tolist()
             predict_probs.extend(predict_results)
             target_labels.extend(batch['label_list'])
+
         total_loss = total_loss / num_batch
+
         if mode == 'EVAL':
             metrics = evaluate(predict_probs,
                                target_labels,
                                self.vocab,
                                self.config.eval.threshold)
-            # metrics = {'precision': precision_micro,
-            #             'recall': recall_micro,
-            #             'micro_f1': micro_f1,
-            #             'macro_f1': macro_f1}
+
             logger.info("%s performance at epoch %d --- Precision: %f, "
                         "Recall: %f, Micro-F1: %f, Macro-F1: %f, Loss: %f.\n"
                         % (stage, epoch,
