@@ -22,7 +22,8 @@ class Vocab(object):
         logger.info('Building Vocabulary....')
         self.corpus_files = {"TRAIN": os.path.join(config.data.data_dir, config.data.train_file),
                              "VAL": os.path.join(config.data.data_dir, config.data.val_file),
-                             "TEST": os.path.join(config.data.data_dir, config.data.test_file)}
+                             "TEST": os.path.join(config.data.data_dir, config.data.test_file),
+                             "GOLDEN": os.path.join(config.data.data_dir, config.data.golden_file)}
         counter = Counter()
         self.config = config
         # counter for tokens
