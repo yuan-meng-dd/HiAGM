@@ -45,7 +45,8 @@ class ClassificationDataset(Dataset):
         super(ClassificationDataset, self).__init__()
         self.corpus_files = {"TRAIN": os.path.join(config.data.data_dir, config.data.train_file),
                              "VAL": os.path.join(config.data.data_dir, config.data.val_file),
-                             "TEST": os.path.join(config.data.data_dir, config.data.test_file)}
+                             "TEST": os.path.join(config.data.data_dir, config.data.test_file),
+                             "GOLDEN": os.path.join(config.data.data_dir, config.data.golden_file)}
         self.config = config
         self.vocab = vocab
         self.on_memory = on_memory

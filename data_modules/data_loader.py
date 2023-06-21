@@ -6,7 +6,7 @@ from data_modules.collator import Collator
 from torch.utils.data import DataLoader
 
 
-def data_loaders(config, vocab, data={'train': None, 'val': None, 'test': None}):
+def data_loaders(config, vocab, data={'train': None, 'val': None, 'test': None, 'golden': None}):
     """
     get data loaders for training and evaluation
     :param config: helper.configure, Configure Object
@@ -40,4 +40,12 @@ def data_loaders(config, vocab, data={'train': None, 'val': None, 'test': None})
                              collate_fn=collate_fn,
                              pin_memory=True)
 
-    return train_loader, val_loader, test_loader
+    golden_dataset = ClassificationDataset(config, vocab, stage='GOLDEN', on_memory=on_memory, corpus_lines=data['golden'])
+    golden_loader = DataLoader(golden_dataset,
+                               batch_size=config.eval.batch_size,
+                               shuffle=True,
+                               num_workers=config.train.device_setting.num_workers,
+                               collate_fn=collate_fn,
+                               pin_memory=True)
+
+    return train_loader, val_loader, test_loader, golden_loader

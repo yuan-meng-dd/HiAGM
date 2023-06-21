@@ -39,7 +39,7 @@ def train(config):
                          max_size=50000)
 
     # get data
-    train_loader, dev_loader, test_loader = data_loaders(config, corpus_vocab)
+    train_loader, dev_loader, test_loader, _ = data_loaders(config, corpus_vocab)
 
     # build up model
     hiagm = HiAGM(config, corpus_vocab, model_type=config.model.type, model_mode='TRAIN')

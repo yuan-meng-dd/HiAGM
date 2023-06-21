@@ -38,7 +38,7 @@ def evaluate(config):
                          max_size=50000)
 
     # get data
-    _, _, test_loader = data_loaders(config, corpus_vocab)
+    _, _, test_loader, _ = data_loaders(config, corpus_vocab)
 
     # build up model
     hiagm = HiAGM(config, corpus_vocab, model_type=config.model.type, model_mode='TRAIN')
